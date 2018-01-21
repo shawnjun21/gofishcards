@@ -63,11 +63,10 @@ var all_cards = [
 var gamestart = 0
 ;
 //number of players in the beginning
-var players = 1
+var players = 0
 ;
 //Usernames of players
 var ids = [
-"billard"
 ];
 var test = 0
 ;
@@ -92,7 +91,11 @@ bot.on("message", message =>
                     message.channel.send("Sucessfully joined the game!")
                     //for some odd reason, without this wait code, everything happens simultaneously and does not work. :P 
                     ids.push("" + message.author.username + "")
-                    message.channel.send(ids[ids.length - 1])
+                    message.channel.send("Players:")
+                    for(a = 0; a < ids.length; a++)
+                    {
+                        message.channel.send("" + ids[a] + "")
+                    }
                     setTimeout(wait, 1000)
                     function wait() {
                         players += 1
@@ -101,7 +104,7 @@ bot.on("message", message =>
                     bot.on("message", message =>
                     {
                         var txt = message.content.split(" ");
-                        if (txt[0].toLowerCase() == "-start" && players < 2)
+                        if (txt[0].toLowerCase() == "-start" && players > 1)
                         {
                             message.channel.send("Starting the game with " + players + " players...")
                             //This part will repeat the product of # of players and 5 times.
@@ -129,6 +132,10 @@ bot.on("message", message =>
                             }
                             //message.channel.send(test)
                         }
+                        else
+                        {
+                            
+                        }
                     });
                 }
                 else
@@ -148,3 +155,5 @@ bot.on("message", message =>
     }
 });
 bot.login(token);
+
+//message.channel.send("You can't play by yourself. Ask a friend to play by using \"-play.\"")
