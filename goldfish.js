@@ -63,16 +63,20 @@ var all_cards = [
 var gamestart = 0
 ;
 //number of players in the beginning
-var players = 0
+var players = 1
 ;
 //Usernames of players
 var ids = [
-
+"billard"
 ];
 var test = 0
 ;
-//does various things
+//does stuff
 var counter = 0
+;
+//pickedcard
+var pickedcard = 0
+;
 bot.on("message", message =>
 {
     var txt = message.content.split(" ");
@@ -88,7 +92,7 @@ bot.on("message", message =>
                     message.channel.send("Sucessfully joined the game!")
                     //for some odd reason, without this wait code, everything happens simultaneously and does not work. :P 
                     ids.push("" + message.author.username + "")
-                    message.channel.send(ids[0])
+                    message.channel.send(ids[ids.length - 1])
                     setTimeout(wait, 1000)
                     function wait() {
                         players += 1
@@ -97,7 +101,7 @@ bot.on("message", message =>
                     bot.on("message", message =>
                     {
                         var txt = message.content.split(" ");
-                        if (txt[0].toLowerCase() == "-start")
+                        if (txt[0].toLowerCase() == "-start" && players < 2)
                         {
                             message.channel.send("Starting the game with " + players + " players...")
                             //This part will repeat the product of # of players and 5 times.
@@ -106,20 +110,22 @@ bot.on("message", message =>
                                 for(i = 0; i < 5; i++)
                                 {
                                     function guarantee(){
-                                    var pickedcard = Math.floor(Math.random() * 52);
+                                    pickedcard = Math.floor(Math.random() * 52)
                                     message.channel.send(pickedcard)
                                     if(all_cards[pickedcard].owner == 0)
                                     {
                                         message.channel.send("done!")
+                                        all_cards[pickedcard].owner = ids[p]
+                                        message.channel.send(all_cards[pickedcard].owner)
                                     }
-                                    else
+                                    else if(all_cards[pickedcard].owner !== 0)
                                     {
                                         message.channel.send("repeating")
-                                        guarantee()
-                                    }  
+                                        guarantee();
+                                    } 
                                 }
+                                guarantee();
                                 }
-                                counter += 1
                             }
                             //message.channel.send(test)
                         }
