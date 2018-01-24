@@ -67,6 +67,7 @@ var players = 0
 ;
 //Usernames of players
 var ids = [
+
 ];
 var test = 0
 ;
@@ -76,6 +77,9 @@ var counter = 0
 //pickedcard
 var pickedcard = 0
 ;
+var dmmessage = 0
+;
+
 bot.on("message", message =>
 {
     var txt = message.content.split(" ");
@@ -89,54 +93,18 @@ bot.on("message", message =>
                 if (detectid == -1)
                 {
                     message.channel.send("Sucessfully joined the game!")
+                    message.author.send("Welcome to Go Fish!")
                     //for some odd reason, without this wait code, everything happens simultaneously and does not work. :P 
-                    ids.push("" + message.author.username + "")
+                    ids.push(message.author.username)
                     message.channel.send("Players:")
                     for(a = 0; a < ids.length; a++)
                     {
-                        message.channel.send("" + ids[a] + "")
+                        message.channel.send(ids[a])
                     }
                     setTimeout(wait, 1000)
                     function wait() {
                         players += 1
                     }
-                    //Will not do anything until players join and someone says -start
-                    bot.on("message", message =>
-                    {
-                        var txt = message.content.split(" ");
-                        if (txt[0].toLowerCase() == "-start" && players > 1)
-                        {
-                            message.channel.send("Starting the game with " + players + " players...")
-                            //This part will repeat the product of # of players and 5 times.
-                            for(p = 0; p < players; p++)
-                            {
-                                for(i = 0; i < 5; i++)
-                                {
-                                    function guarantee(){
-                                    pickedcard = Math.floor(Math.random() * 52)
-                                    message.channel.send(pickedcard)
-                                    if(all_cards[pickedcard].owner == 0)
-                                    {
-                                        message.channel.send("done!")
-                                        all_cards[pickedcard].owner = ids[p]
-                                        message.channel.send(all_cards[pickedcard].owner)
-                                    }
-                                    else if(all_cards[pickedcard].owner !== 0)
-                                    {
-                                        message.channel.send("repeating")
-                                        guarantee();
-                                    } 
-                                }
-                                guarantee();
-                                }
-                            }
-                            //message.channel.send(test)
-                        }
-                        else
-                        {
-                            
-                        }
-                    });
                 }
                 else
                 {
@@ -153,7 +121,124 @@ bot.on("message", message =>
             message.channel.send("There are too many players in the current game. Please wait until the game ends.")
         }
     }
-});
-bot.login(token);
+;
+var txt = message.content.split(" ");
+if (txt[0].toLowerCase() == "-start" && players > 1 && gamestart == 0)
+                        {
+                            message.channel.send("Starting the game with " + players + " players...")
+                            gamestart += 1
+                            //This part will repeat the product of # of players and 5 times.
+                            for(p = 0; p < players; p++)
+                            {
+                                for(i = 0; i < 5; i++)
+                                {
+                                    function guarantee(){
+                                    pickedcard = Math.floor(Math.random() * 52)
+                                    if(all_cards[pickedcard].owner == 0)
+                                    {
+                                        all_cards[pickedcard].owner = ids[p]
+                                    }
+                                    else if(all_cards[pickedcard].owner !== 0)
+                                    {
+                                        guarantee();
+                                    } 
+                                }
+                                guarantee();
+                                }
+                            }
+                            
+                            message.channel.send("Done dealing cards! Sending your decks to your DMs.")
+                        }
+                    });
 
+bot.on("message", message =>
+{
+var txt = message.content.split(" ");
+if (txt[0].toLowerCase() == "-get")
+{
+        for(b = 0; b < 52; b++)
+        {
+            if(all_cards[b].owner == "" + message.author.username + "")
+            {
+                if(all_cards[b].suit == 0)
+                {
+                    dmmessage = ":clubs:"
+                }
+                if(all_cards[b].suit == 1)
+                {
+                    dmmessage = ":diamonds:"
+                }
+                if(all_cards[b].suit == 2)
+                {
+                    dmmessage = ":spades:"
+                }
+                if(all_cards[b].suit == 3)
+                {
+                    dmmessage = ":hearts:"
+                }
+                if(all_cards[b].value == 0)
+                {
+                    dmmessage += " Ace"
+                }
+                if(all_cards[b].value == 1)
+                {
+                    dmmessage += " 2"
+                }
+                if(all_cards[b].value == 2)
+                {
+                    dmmessage += " 3"
+                }
+                if(all_cards[b].value == 3)
+                {
+                    dmmessage += " 4"
+                }
+                if(all_cards[b].value == 4)
+                {
+                    dmmessage += " 5"
+                }
+                if(all_cards[b].value == 5)
+                {
+                    dmmessage += " 6"
+                }
+                if(all_cards[b].value == 6)
+                {
+                    dmmessage += " 7"
+                }
+                if(all_cards[b].value == 7)
+                {
+                    dmmessage += " 8"
+                }
+                if(all_cards[b].value == 8)
+                {
+                    dmmessage += " 9"
+                }
+                if(all_cards[b].value == 9)
+                {
+                    dmmessage += " 10"
+                }
+                if(all_cards[b].value == 10)
+                {
+                    dmmessage += " Jack"
+                }
+                if(all_cards[b].value == 11)
+                {
+                    dmmessage += " Queen"
+                }
+                if(all_cards[b].value == 12)
+                {
+                    dmmessage += " King"
+                }
+            }
+           if(dmmessage.length > 2)
+           {
+            message.author.send(dmmessage)
+            dmmessage = 0
+           }
+        }
+    
+}
+                }
+            )
+;
+bot.login(token);
 //message.channel.send("You can't play by yourself. Ask a friend to play by using \"-play.\"")
