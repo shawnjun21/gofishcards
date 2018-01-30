@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const bot = new Discord.Client();
-const token = "NDA0NDg3NTc5NDkzMzM1MDQx.DUWnLQ.lIYDX1zZknizZoWioF8qOByMXmo";
+const token = "ToKen";
 
 //All the cards in the deck where suit: 0 is clubs, 1 is diamonds, 2 is spades, 3 is hearts. 
 //value: 0 is Ace, 10 is Jack, 11 is Queen, 12 is King
